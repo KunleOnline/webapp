@@ -28,6 +28,6 @@ docker run --rm \
     --scan /src \
     --format "ALL" \
     --project "$DC_PROJECT" \
-    --out /report
+    --out /var/lib/jenkins/OWASP-Dependency-Check/reports/dependency-check-report.xml
     # Use suppression like this: (where /src == $pwd)
     # --suppression "/src/security/dependency-check-suppression.xml"
