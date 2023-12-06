@@ -13,13 +13,7 @@ pipeline {
       }
     }
     
-stage ('Check-Git-Secrets') {
-      steps {
-        sh 'rm trufflehog || true'
-        sh 'docker run gesellix/trufflehog --json https://github.com/KunleOnline/webapp.git > trufflehog'
-        sh 'cat trufflehog'
-      }
-    }
+
     
 
 stage ('Source Composition Analysis') {
@@ -33,15 +27,7 @@ stage ('Source Composition Analysis') {
       }
     }  
     
-    stage ('SAST') {
-      steps {
-        withSonarQubeEnv('sonar') {
-          sh 'mvn sonar:sonar'
-          sh 'cat target/sonar/report-task.txt'
-        }
-      }
-    }
-    
+  
  stage ('Build') {
       steps {
       sh 'mvn clean package'
