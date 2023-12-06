@@ -14,8 +14,6 @@ pipeline {
     }
     
 
-    
-
 stage ('Source Composition Analysis') {
       steps {
          sh 'rm owasp* || true'
@@ -26,7 +24,15 @@ stage ('Source Composition Analysis') {
         
       }
     }  
-    
+
+     stage ('SAST') {
+      steps {
+        withSonarQubeEnv('sonar') {
+          sh 'mvn sonar:sonar'
+          sh 'cat target/sonar/report-task.txt'
+        }
+      }
+    }
   
  stage ('Build') {
       steps {
@@ -41,6 +47,17 @@ stage ('Deploy-To-Tomcat') {
               }      
            }       
     }
+
+stage ('DAST') {
+      steps {
+        sshagent(['zap']) {
+         sh 'ssh -o  StrictHostKeyChecking=no ubuntu@18.189.7.4 "docker run -t owasp/zap2docker-stable zap-baseline.py -t http://3.16.56.228:8080/webapp/" || true'
+        }
+      }
+    }
+    
+  }
+}
     
  }
 }
